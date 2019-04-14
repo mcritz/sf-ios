@@ -117,6 +117,17 @@
     return self.events[index];
 }
 
+- (void)filterEventsWith:(NSString *)searchTerm {
+    if (searchTerm.length < 1) {
+//        __weak typeof(self) welf = self;
+//        [welf refresh];
+        return;
+    }
+    NSPredicate *coffeeFilter = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@", searchTerm];
+    RLMResults *filteredCoffee = [Event objectsWithPredicate:coffeeFilter];
+    self.events = [filteredCoffee sortedResultsUsingKeyPath:@"date" ascending:false];
+}
+
 - (NSUInteger)numberOfEvents {
     return self.events.count;
 }

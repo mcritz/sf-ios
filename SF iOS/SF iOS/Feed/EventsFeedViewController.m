@@ -16,7 +16,7 @@
 #import "ImageStore.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface EventsFeedViewController () <EventDataSourceDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate>
+@interface EventsFeedViewController () <EventDataSourceDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, UISearchBarDelegate>
 
 @property (nonatomic) EventDataSource *dataSource;
 @property (nonatomic) UITableView *tableView;
@@ -202,6 +202,27 @@ NS_ASSUME_NONNULL_END
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
     [self presentViewController:viewControllerToCommit animated:true completion:nil];
+}
+
+//MARK: - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    [self.dataSource filterEventsWith:searchText];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self.dataSource filterEventsWith:searchBar.text];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self.dataSource filterEventsWith:@""];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self.dataSource filterEventsWith:searchBar.text];
 }
 
 //MARK: - EventDataSourceDelegate

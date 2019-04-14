@@ -31,6 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithEventType:(EventType)eventType;
 - (void)refresh;
 - (Event *)eventAtIndex:(NSUInteger)index;
-
+- (void)filterEventsWith:(NSString *)searchTerm;
 @end
 NS_ASSUME_NONNULL_END
