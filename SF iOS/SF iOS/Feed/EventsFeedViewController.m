@@ -24,10 +24,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) ImageStore *imageStore;
 @property (nonatomic) NSOperationQueue *imageFetchQueue;
 @property (nullable, nonatomic) UserLocation *userLocationService;
+@property (nonatomic) UISearchBar *searchBar;
 @end
 NS_ASSUME_NONNULL_END
 
 @implementation EventsFeedViewController
+
+#define kSEARCHBARHEIGHT 32
+#define kTABLEHEADERHEIGHT (2 * kSEARCHBARHEIGHT)
 
 - (instancetype)initWithDataSource:(EventDataSource *)dataSource {
     if (self = [super initWithNibName:nil bundle:nil]) {
@@ -70,7 +74,12 @@ NS_ASSUME_NONNULL_END
     [self.tableView registerClass:self.feedItemCellClass forCellReuseIdentifier:NSStringFromClass(self.feedItemCellClass)];
     self.tableView.rowHeight = self.cellHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.contentInset = UIEdgeInsetsMake(40, 0, 0, 0);
+    self.tableView.tableHeaderView.backgroundColor = UIColor.clearColor;
+    self.tableView.contentInset = UIEdgeInsetsMake(
+                                                   self.view.safeAreaInsets.top + kSEARCHBARHEIGHT,
+                                                   self.view.safeAreaInsets.right,
+                                                   self.view.safeAreaInsets.bottom,
+                                                   self.view.safeAreaInsets.right);
     self.tableView.translatesAutoresizingMaskIntoConstraints = false;
     self.tableView.delaysContentTouches = NO;
     [self.view addSubview:self.tableView];
@@ -87,6 +96,26 @@ NS_ASSUME_NONNULL_END
     if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
         [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
     }
+    
+    CGRect searchBarRect = CGRectMake(0, 0, self.view.frame.size.width, kSEARCHBARHEIGHT);
+    self.searchBar = [[UISearchBar alloc] initWithFrame:searchBarRect];
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    self.searchBar.placeholder = NSLocalizedString(@"Filter", @"Prompt to search for event names. Here, `Filter` is a joke in English because people filter coffee and this list can be filtered by a term.");
+    self.searchBar.showsCancelButton = true;
+    self.searchBar.delegate = self;
+    
+    CGRect tableSearchViewRect = CGRectMake(0, 0, self.searchBar.frame.size.width, kTABLEHEADERHEIGHT);
+    UIView *tableSearchView = [[UIView alloc] initWithFrame:tableSearchViewRect];
+    tableSearchView.backgroundColor = UIColor.whiteColor;
+    [tableSearchView addSubview:self.searchBar];
+    self.tableView.tableHeaderView = tableSearchView;
+    
+    self.tableView.tableHeaderView.backgroundColor = UIColor.whiteColor;
+    CGPoint contentOffest = self.tableView.contentOffset;
+    contentOffest.y += kSEARCHBARHEIGHT;
+    self.tableView.contentOffset = contentOffest;
+    
+    // TODO: Add an invisible, dismissng button below the search UI
     
     [self addStatusBarBlurBackground];
 
