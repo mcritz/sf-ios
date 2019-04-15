@@ -91,7 +91,7 @@ NS_ASSUME_NONNULL_END
     [self.tableView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor].active = true;
     
     self.tableView.refreshControl = [[UIRefreshControl alloc] init];
-    [self.tableView.refreshControl addTarget:self.dataSource action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [self.tableView.refreshControl addTarget:self action:@selector(handleRefresh) forControlEvents:UIControlEventValueChanged];
     
     if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
         [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
@@ -182,6 +182,13 @@ NS_ASSUME_NONNULL_END
     [self.userLocationService requestLocationPermission];
     EventDetailsViewController *vc = [self eventDetailsViewControllerForEventAtIndexPath:indexPath];
     [self presentViewController:vc animated:true completion:nil];
+}
+
+- (void)handleRefresh {
+    [self.dataSource filterEventsWith:@""];
+    self.searchBar.text = @"";
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.tableView.refreshControl endRefreshing];
 }
 
 //MARK: - 3D Touch Peek & Pop
