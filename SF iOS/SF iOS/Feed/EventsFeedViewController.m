@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSOperationQueue *imageFetchQueue;
 @property (nullable, nonatomic) UserLocation *userLocationService;
 @property (nonatomic) UISearchBar *searchBar;
+@property (nonatomic) UIView *noResultsView;
 @end
 NS_ASSUME_NONNULL_END
 
@@ -117,6 +118,30 @@ NS_ASSUME_NONNULL_END
     
     // TODO: Add an invisible, dismissng button below the search UI
     
+    self.noResultsView = [[UIView alloc] init];
+    self.noResultsView.frame = CGRectMake(0, (1.5 * kTABLEHEADERHEIGHT), self.tableView.frame.size.width, (self.view.bounds.size.height - (4 * kTABLEHEADERHEIGHT)));
+    [self.noResultsView setHidden:true];
+    [self.view addSubview:self.noResultsView];
+    
+    UILabel *noResultsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+    noResultsLabel.text = NSLocalizedString(@"No events", @"Displayed when no Event names match the given search term");
+    noResultsLabel.textAlignment = NSTextAlignmentCenter;
+    noResultsLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2];
+    [self.noResultsView addSubview:noResultsLabel];
+    
+    [noResultsLabel.topAnchor constraintEqualToAnchor:self.noResultsView.topAnchor].active = true;
+    [noResultsLabel.leftAnchor constraintEqualToAnchor:self.noResultsView.leftAnchor].active = true;
+    [noResultsLabel.rightAnchor constraintEqualToAnchor:self.noResultsView.rightAnchor].active = true;
+    [noResultsLabel.bottomAnchor constraintEqualToAnchor:self.noResultsView.bottomAnchor].active = true;
+    [noResultsLabel.widthAnchor constraintEqualToAnchor:self.noResultsView.widthAnchor].active = true;
+
+    
+    [self.noResultsView.topAnchor constraintEqualToAnchor:self.searchBar.bottomAnchor].active = true;
+    [self.noResultsView.leftAnchor constraintEqualToAnchor:self.tableView.leftAnchor].active = true;
+    [self.noResultsView.rightAnchor constraintEqualToAnchor:self.tableView.rightAnchor].active = true;
+    [self.noResultsView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = true;
+    [self.noResultsView.widthAnchor constraintEqualToAnchor:self.tableView.widthAnchor].active = true;
+    
     [self addStatusBarBlurBackground];
 
     [self.dataSource refresh];
@@ -136,7 +161,13 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataSource.numberOfEvents;
+    NSUInteger eventCount = self.dataSource.numberOfEvents;
+    if (eventCount < 1) {
+        [self.noResultsView setHidden:false];
+    } else {
+        [self.noResultsView setHidden:true];
+    }
+    return eventCount;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -226,6 +257,7 @@ NS_ASSUME_NONNULL_END
     [searchBar resignFirstResponder];
     [self.dataSource filterEventsWith:@""];
     searchBar.text = @"";
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
