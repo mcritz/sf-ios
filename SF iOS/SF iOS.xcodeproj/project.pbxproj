@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0910754EFA129307D1836813 /* libPods-Coffup.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EB561B7A11FAA66CFCF67FE /* libPods-Coffup.a */; };
-		0FE3F673226138E900229A2A /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C82516451F2FEB6F006B9D7E /* NSDate+Utilities.m */; };
-		0FE3F674226138EA00229A2A /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = C82516451F2FEB6F006B9D7E /* NSDate+Utilities.m */; };
 		19DD32F5225B294900C0EE5A /* NSUserDefaults+Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 19DD32F4225B294900C0EE5A /* NSUserDefaults+Settings.m */; };
 		19DD32F8225EFC6100C0EE5A /* SwipableNavigationContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 19DD32F7225EFC6100C0EE5A /* SwipableNavigationContainer.m */; };
 		19DD32FB225EFE9700C0EE5A /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19DD32F9225EFE9700C0EE5A /* SettingsViewController.m */; };
@@ -893,7 +891,6 @@
 				C86DD43D1F3A4DFD00C58723 /* TravelTime+ArrivalTests.m in Sources */,
 				C82516481F2FF293006B9D7E /* FeedItemTests.m in Sources */,
 				C897CD111F37B78200E6C2A6 /* DateTests.m in Sources */,
-				0FE3F673226138E900229A2A /* NSDate+Utilities.m in Sources */,
 				5FECEFD9224EE87D00AA8A25 /* EventTests.m in Sources */,
 				5FECEFDD224EEBE900AA8A25 /* LocationTests.m in Sources */,
 				C88A19C81F2EC56600C08187 /* EventDataSourceTests.m in Sources */,
@@ -906,7 +903,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8810A471F2BFE6900DCFEB6 /* SF_iOSUITests.m in Sources */,
-				0FE3F674226138EA00229A2A /* NSDate+Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
