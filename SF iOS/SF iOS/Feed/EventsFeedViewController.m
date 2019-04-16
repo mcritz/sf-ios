@@ -216,9 +216,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleRefresh {
-    [self.dataSource filterEventsWith:@""];
+    self.dataSource.searchQuery = [@"" mutableCopy];
     self.searchBar.text = @"";
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.tableView reloadData];
     [self.tableView.refreshControl endRefreshing];
 }
 
@@ -243,26 +243,36 @@ NS_ASSUME_NONNULL_END
 }
 
 //MARK: - UISearchBarDelegate
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    self.tableView.scrollEnabled = false;
+}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [self.dataSource filterEventsWith:searchText];
+    self.dataSource.searchQuery = [searchText mutableCopy];
+    [self.tableView reloadData];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    [self.dataSource filterEventsWith:searchBar.text];
+    self.dataSource.searchQuery = [searchBar.text mutableCopy];
+    [self.tableView reloadData];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    [self.dataSource filterEventsWith:@""];
+    self.dataSource.searchQuery = [@"" mutableCopy];
+    [self.tableView reloadData];
     searchBar.text = @"";
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    [self.dataSource filterEventsWith:searchBar.text];
+    self.dataSource.searchQuery = [searchBar.text mutableCopy];
+    [self.tableView reloadData];
 }
 
 //MARK: - EventDataSourceDelegate

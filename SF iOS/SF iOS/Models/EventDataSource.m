@@ -21,6 +21,7 @@
 @property (nonatomic) FeedFetchService *service;
 @property (nonatomic) RLMNotificationToken *notificationToken;
 @property (nonatomic) RLMRealm *realm;
+- (RLMResults<Event *> *)filterEventsWithSearchTerm:(NSString *)searchTerm;
 @end
 
 @implementation EventDataSource
@@ -28,6 +29,7 @@
 - (instancetype)initWithEventType:(EventType)eventType {
     if (self = [super init]) {
         self.eventType = eventType;
+        self.searchQuery = [[NSMutableString alloc] initWithString:@""];
         self.events = [[Event allObjects] sortedResultsUsingKeyPath:@"date" ascending:false];
         self.service = [[FeedFetchService alloc] init];
         [self observeAppActivationEvents];
@@ -132,15 +134,13 @@
 ///
 /// - paramaters:
 ///     -searchTerm: string to search
-/// - returns: void
-- (void)filterEventsWith:(NSString *)searchTerm {
-    if (searchTerm.length < 1) {
-        self.events = [Event allObjects];
-        return;
-    }
+/// - returns: RLMResults<Event *>* array of Events
+
+- (RLMResults<Event *> *)filterEventsWithSearchTerm:(NSString *)searchTerm {    
     NSPredicate *coffeeFilter = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@", searchTerm];
-    RLMResults *filteredCoffee = [Event objectsWithPredicate:coffeeFilter];
-    self.events = [filteredCoffee sortedResultsUsingKeyPath:@"date" ascending:false];
+    RLMResults<Event *> *filteredCoffee = [[Event objectsWithPredicate:coffeeFilter]
+                                           sortedResultsUsingKeyPath:@"date" ascending:false];
+    return filteredCoffee;
 }
 
 - (NSUInteger)numberOfEvents {
