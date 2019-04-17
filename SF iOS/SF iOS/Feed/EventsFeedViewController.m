@@ -76,16 +76,18 @@ NS_ASSUME_NONNULL_END
     self.tableView.rowHeight = self.cellHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.tableHeaderView.backgroundColor = UIColor.clearColor;
+    
+    UIEdgeInsets safeInsets = self.view.safeAreaInsets;
     self.tableView.contentInset = UIEdgeInsetsMake(
-                                                   self.view.safeAreaInsets.top + kSEARCHBARHEIGHT,
-                                                   self.view.safeAreaInsets.right,
-                                                   self.view.safeAreaInsets.bottom,
-                                                   self.view.safeAreaInsets.right);
+                                                   safeInsets.top + kSEARCHBARHEIGHT,
+                                                   safeInsets.right,
+                                                   safeInsets.bottom,
+                                                   safeInsets.right);
     self.tableView.translatesAutoresizingMaskIntoConstraints = false;
     self.tableView.delaysContentTouches = NO;
     [self.view addSubview:self.tableView];
 
-    [self.tableView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = true;
+    [self.tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = true;
     [self.tableView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor].active = true;
     [self.tableView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor].active = true;
     [self.tableView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = true;
@@ -105,6 +107,7 @@ NS_ASSUME_NONNULL_END
     self.searchBar.showsCancelButton = true;
     self.searchBar.delegate = self;
     
+    // TODO: There’s probably a better way of doing this that doesn’t require a new view
     CGRect tableSearchViewRect = CGRectMake(0, 0, self.searchBar.frame.size.width, kTABLEHEADERHEIGHT);
     UIView *tableSearchView = [[UIView alloc] initWithFrame:tableSearchViewRect];
     tableSearchView.backgroundColor = UIColor.whiteColor;
@@ -122,8 +125,8 @@ NS_ASSUME_NONNULL_END
     self.noResultsView.frame = CGRectMake(0, (1.5 * kTABLEHEADERHEIGHT), self.tableView.frame.size.width, (self.view.bounds.size.height - (4 * kTABLEHEADERHEIGHT)));
     [self.noResultsView setHidden:true];
     [self.view addSubview:self.noResultsView];
-    
-    UILabel *noResultsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+    CGRect labelFrame = CGRectMake(0, 0, self.view.frame.size.width, 100);
+    UILabel *noResultsLabel = [[UILabel alloc] initWithFrame:labelFrame];
     noResultsLabel.text = NSLocalizedString(@"No events", @"Displayed when no Event names match the given search term");
     noResultsLabel.textAlignment = NSTextAlignmentCenter;
     noResultsLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2];
@@ -161,6 +164,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // TODO: Need to move this logic to a more suitable place
     NSUInteger eventCount = self.dataSource.numberOfEvents;
     if (eventCount < 1) {
         [self.noResultsView setHidden:false];
@@ -216,7 +220,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleRefresh {
-    self.dataSource.searchQuery = [@"" mutableCopy];
+    self.dataSource.searchQuery = @"";
     self.searchBar.text = @"";
     [self.tableView reloadData];
     [self.tableView.refreshControl endRefreshing];
@@ -248,21 +252,21 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    self.dataSource.searchQuery = [searchText mutableCopy];
+    self.dataSource.searchQuery = searchText;
     [self.tableView reloadData];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    self.dataSource.searchQuery = [searchBar.text mutableCopy];
+    self.dataSource.searchQuery = searchBar.text;
     [self.tableView reloadData];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    self.dataSource.searchQuery = [@"" mutableCopy];
+    self.dataSource.searchQuery = @"";
     [self.tableView reloadData];
     searchBar.text = @"";
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -271,7 +275,7 @@ NS_ASSUME_NONNULL_END
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     self.tableView.scrollEnabled = true;
     [searchBar resignFirstResponder];
-    self.dataSource.searchQuery = [searchBar.text mutableCopy];
+    self.dataSource.searchQuery = searchBar.text;
     [self.tableView reloadData];
 }
 
@@ -282,6 +286,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)didChangeDataSourceWithInsertions:(nullable NSArray<NSIndexPath *> *)insertions updates:(nullable NSArray<NSIndexPath *> *)updates deletions:(nullable NSArray<NSIndexPath *> *)deletions {
+    
+    // Don’t crash the app by modifying the table while the user is searching
+    if (self.dataSource.searchQuery.length > 0) { return; }
+    
+    // Otherwise update on changes
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:deletions
@@ -336,6 +345,16 @@ static CGFloat const eventCellAspectRatio = 1.352;
 }
 
 //MARK: - First Load
+
+- (void)refresh {
+    if (!self.firstLoad) {
+        [self.tableView reloadData];
+        return;
+    }
+    
+    [self animateFirstLoad];
+    self.firstLoad = false;
+}
 
 - (void)animateFirstLoad {
     [self.tableView reloadData];
