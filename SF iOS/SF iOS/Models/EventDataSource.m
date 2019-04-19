@@ -150,7 +150,7 @@
 /// - returns: RLMResults<Event *>* array of Events
 
 - (RLMResults<Event *> *)filterEventsWithSearchTerm:(NSString *)searchTerm {    
-    NSPredicate *coffeeFilter = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@", searchTerm];
+    NSPredicate *coffeeFilter = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@ OR venue.name CONTAINS[c] %@", searchTerm, searchTerm];
     RLMResults<Event *> *filteredCoffee = [[Event objectsWithPredicate:coffeeFilter]
                                            sortedResultsUsingKeyPath:@"date" ascending:false];
     return filteredCoffee;
