@@ -138,7 +138,6 @@ NS_ASSUME_NONNULL_END
     [noResultsLabel.bottomAnchor constraintEqualToAnchor:self.noResultsView.bottomAnchor].active = true;
     [noResultsLabel.widthAnchor constraintEqualToAnchor:self.noResultsView.widthAnchor].active = true;
 
-    
     [self.noResultsView.topAnchor constraintEqualToAnchor:self.searchBar.bottomAnchor].active = true;
     [self.noResultsView.leftAnchor constraintEqualToAnchor:self.tableView.leftAnchor].active = true;
     [self.noResultsView.rightAnchor constraintEqualToAnchor:self.tableView.rightAnchor].active = true;
