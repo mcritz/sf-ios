@@ -78,8 +78,7 @@ NS_ASSUME_NONNULL_END
     self.tableView.tableHeaderView.backgroundColor = UIColor.clearColor;
     
     UIEdgeInsets safeInsets = self.view.safeAreaInsets;
-    self.tableView.contentInset = UIEdgeInsetsMake(
-                                                   safeInsets.top + kSEARCHBARHEIGHT,
+    self.tableView.contentInset = UIEdgeInsetsMake(safeInsets.top + kSEARCHBARHEIGHT,
                                                    safeInsets.right,
                                                    safeInsets.bottom,
                                                    safeInsets.right);

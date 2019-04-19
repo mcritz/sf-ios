@@ -62,6 +62,19 @@
     [self.notificationToken invalidate];
 }
 
+/// Events array
+/// The getter will return predicated if the _searchQuery is set
+///
+/// - returns: RLMResults<Event *> * Events array
+- (RLMResults<Event *> *)events {
+    if (self.searchQuery.length > 0) {
+        return [self filterEventsWithSearchTerm:self.searchQuery];
+    }
+    return [[Event allObjects] sortedResultsUsingKeyPath:@"date" ascending:false];
+}
+
+
+
 /// Maps [Event] by {eventID : Event}
 ///
 /// - parameters:
