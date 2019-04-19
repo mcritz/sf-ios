@@ -165,6 +165,8 @@ NS_ASSUME_NONNULL_END
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // TODO: Need to move this logic to a more suitable place
+	// This can probably be fixed as part of https://github.com/ThumbWorks/sf-ios/issues/36
+	// And/or https://github.com/ThumbWorks/sf-ios/issues/37
     NSUInteger eventCount = self.dataSource.numberOfEvents;
     if (eventCount < 1) {
         [self.noResultsView setHidden:false];
