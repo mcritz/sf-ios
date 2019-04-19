@@ -164,16 +164,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // TODO: Need to move this logic to a more suitable place
-	// This can probably be fixed as part of https://github.com/ThumbWorks/sf-ios/issues/36
-	// And/or https://github.com/ThumbWorks/sf-ios/issues/37
-    NSUInteger eventCount = self.dataSource.numberOfEvents;
-    if (eventCount < 1) {
-        [self.noResultsView setHidden:false];
-    } else {
-        [self.noResultsView setHidden:true];
-    }
-    return eventCount;
+    return self.dataSource.numberOfEvents;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -249,6 +240,14 @@ NS_ASSUME_NONNULL_END
 }
 
 //MARK: - UISearchBarDelegate
+- (void)handleFilterResults {
+    if (self.dataSource.numberOfEvents < 1) {
+        [self.noResultsView setHidden:false];
+        return;
+    }
+    [self.noResultsView setHidden:true];
+}
+
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     self.tableView.scrollEnabled = false;
 }
@@ -256,6 +255,7 @@ NS_ASSUME_NONNULL_END
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.dataSource.searchQuery = searchText;
     [self.tableView reloadData];
+    [self handleFilterResults];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
@@ -263,6 +263,7 @@ NS_ASSUME_NONNULL_END
     [searchBar resignFirstResponder];
     self.dataSource.searchQuery = searchBar.text;
     [self.tableView reloadData];
+    [self handleFilterResults];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
@@ -270,6 +271,7 @@ NS_ASSUME_NONNULL_END
     [searchBar resignFirstResponder];
     self.dataSource.searchQuery = @"";
     [self.tableView reloadData];
+    [self handleFilterResults];
     searchBar.text = @"";
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
@@ -279,6 +281,7 @@ NS_ASSUME_NONNULL_END
     [searchBar resignFirstResponder];
     self.dataSource.searchQuery = searchBar.text;
     [self.tableView reloadData];
+    [self handleFilterResults];
 }
 
 //MARK: - EventDataSourceDelegate
