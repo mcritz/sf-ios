@@ -107,6 +107,7 @@ NS_ASSUME_NONNULL_END
     self.searchBar.delegate = self;
     
     // TODO: There’s probably a better way of doing this that doesn’t require a new view
+    // https://github.com/ThumbWorks/sf-ios/issues/37
     CGRect tableSearchViewRect = CGRectMake(0, 0, self.searchBar.frame.size.width, kTABLEHEADERHEIGHT);
     UIView *tableSearchView = [[UIView alloc] initWithFrame:tableSearchViewRect];
     tableSearchView.backgroundColor = UIColor.whiteColor;
