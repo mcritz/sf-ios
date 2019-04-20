@@ -215,6 +215,7 @@ NS_ASSUME_NONNULL_END
     self.dataSource.searchQuery = @"";
     self.searchBar.text = @"";
     [self.tableView reloadData];
+    [self handleFilterResults];
     [self.tableView.refreshControl endRefreshing];
 }
 
