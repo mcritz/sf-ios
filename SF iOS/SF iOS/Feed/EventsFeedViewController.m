@@ -218,6 +218,7 @@ NS_ASSUME_NONNULL_END
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder];
     [self.dataSource filterEventsWith:@""];
+    searchBar.text = @"";
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
