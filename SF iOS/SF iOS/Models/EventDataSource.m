@@ -29,7 +29,7 @@
 - (instancetype)initWithEventType:(EventType)eventType {
     if (self = [super init]) {
         self.eventType = eventType;
-        self.searchQuery = [[NSMutableString alloc] initWithString:@""];
+        self.searchQuery = @"";
         self.events = [[Event allObjects] sortedResultsUsingKeyPath:@"date" ascending:false];
         self.service = [[FeedFetchService alloc] init];
         [self observeAppActivationEvents];
@@ -132,9 +132,6 @@
             });
         }
 
-        [realm transactionWithBlock:^{
-            [realm addOrUpdateObjects:addToRealm];
-        }];
     }];
     [self.delegate willUpdateDataSource:self];
 }
@@ -148,7 +145,6 @@
 /// - paramaters:
 ///     -searchTerm: string to search
 /// - returns: RLMResults<Event *>* array of Events
-
 - (RLMResults<Event *> *)filterEventsWithSearchTerm:(NSString *)searchTerm {    
     NSPredicate *coffeeFilter = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@ OR venue.name CONTAINS[c] %@", searchTerm, searchTerm];
     RLMResults<Event *> *filteredCoffee = [[Event objectsWithPredicate:coffeeFilter]

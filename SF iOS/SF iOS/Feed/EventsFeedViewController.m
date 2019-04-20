@@ -245,6 +245,7 @@ NS_ASSUME_NONNULL_END
         return;
     }
     [self.noResultsView setHidden:true];
+    [self.tableView.refreshControl endRefreshing];
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
