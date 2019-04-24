@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_END
     
     [self addStatusBarBlurBackground];
     
-    [self.mapView setDestinationToLocation:self.event.location.location withAnnotationImage:self.event.annotationImage];
+    [self.mapView setDestinationToLocation:self.event.location.location withAnnotationGlyph:self.event.annotationGlyph];
     [self getTravelTimes];
 }
 

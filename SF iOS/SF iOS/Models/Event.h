@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) Venue *venue;
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSString *eventID;
-@property (nullable, nonatomic, readonly) UIImage *annotationImage;
+@property (nullable, nonatomic, readonly) UIImage *annotationGlyph;
 @property (nonatomic) NSDate *endDate;
 @property (nonatomic, readonly, assign) BOOL isActive;
 @property (nullable, nonatomic) NSString *imageFileURLString;
