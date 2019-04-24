@@ -35,16 +35,16 @@
     return @"eventID";
 }
 
-- (UIImage *)annotationImage {
+- (UIImage *)annotationGlyph {
     switch (self.type) {
         case EventTypeSFCoffee:
-            return [UIImage imageNamed:@"coffee-location-icon"];
+            return [UIImage imageNamed:@"coffee-map-glyph"];
             break;
         default:
             break;
     }
     // For now there are no other types
-    return [UIImage imageNamed:@"coffee-location-icon"];
+    return [UIImage imageNamed:@"coffee-map-glyph"];
 
 }
 

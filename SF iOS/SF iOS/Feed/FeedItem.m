@@ -30,7 +30,7 @@
     if (![event.imageFileURLString isEqual:[NSNull null]]) {
         self.coverImageFileURL = event.imageFileURL;
     }
-    self.annotationImage = event.annotationImage;
+    self.annotationGlyph = event.annotationGlyph;
     
     NSString *time;
     

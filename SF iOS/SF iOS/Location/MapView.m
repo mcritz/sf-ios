@@ -15,7 +15,7 @@ static NSString * const destAnnotationIdentifier = @"destinationAnnotationidenti
 
 @property (nonatomic) MKMapView *mapView;
 @property (nullable, nonatomic) MKPointAnnotation *destinationAnnotation;
-@property (nullable, nonatomic) UIImage *annotationImage;
+@property (nullable, nonatomic) UIImage *annotationGlyph;
 @property (nullable, nonatomic) CLLocation *destination;
 @property (nullable, nonatomic) CLLocation *userLocation;
 @property (nonatomic, assign) BOOL cameraHasBeenSet;
@@ -31,9 +31,9 @@ static NSString * const destAnnotationIdentifier = @"destinationAnnotationidenti
     return self;
 }
 
-- (void)setDestinationToLocation:(CLLocation *)destination withAnnotationImage:(UIImage *)annotationImage {
+- (void)setDestinationToLocation:(CLLocation *)destination withAnnotationGlyph:(nonnull UIImage *)annotationGlyph {
     self.destination = destination;
-    self.annotationImage = annotationImage;
+    self.annotationGlyph = annotationGlyph;
     
     [self updateDestinationAnnotation];
 }
@@ -44,7 +44,7 @@ static NSString * const destAnnotationIdentifier = @"destinationAnnotationidenti
     self.mapView.mapType = MKMapTypeMutedStandard;
     self.mapView.showsTraffic = true;
     self.mapView.showsUserLocation = true;
-    [self.mapView registerClass:[MKAnnotationView class] forAnnotationViewWithReuseIdentifier:destAnnotationIdentifier];
+    [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:destAnnotationIdentifier];
     
     self.mapView.translatesAutoresizingMaskIntoConstraints = false;
     [self addSubview:self.mapView];
@@ -73,17 +73,16 @@ static NSString * const destAnnotationIdentifier = @"destinationAnnotationidenti
         return nil;
     }
     
-    MKAnnotationView *dest;
-    dest = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:destAnnotationIdentifier forAnnotation:annotation];
-    
-    if (!dest) {
-        dest = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:destAnnotationIdentifier];
-        dest.canShowCallout = false;
+    MKMarkerAnnotationView *marker = (MKMarkerAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:destAnnotationIdentifier];
+    if (!marker) {
+        marker = [[MKMarkerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:destAnnotationIdentifier];
     }
+    marker.displayPriority = MKFeatureDisplayPriorityRequired;
+    marker.glyphImage = self.annotationGlyph;
+    marker.glyphTintColor = [UIColor blackColor];
+    marker.markerTintColor = [UIColor whiteColor];
     
-    dest.annotation = annotation;
-    dest.image = self.annotationImage;
-    return dest;
+    return marker;
 }
 
 //MARK: - UserLocation
