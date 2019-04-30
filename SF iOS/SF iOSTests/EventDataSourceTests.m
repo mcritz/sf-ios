@@ -20,6 +20,20 @@
 }
 
 
+- (void)testFilterEvents {
+    EventDataSource *testEvtDataSource = [[EventDataSource alloc] initWithEventType:EventTypeSFCoffee];
+    NSUInteger eventCount = [testEvtDataSource numberOfEvents];
+    XCTAssertGreaterThan(eventCount, 0, @"There really should be events here. Are you connected to the internet? If not, it’s likely that production is unreachable and you have bigger problems.");
+    Event *someEvent = [testEvtDataSource eventAtIndex:0];
+    XCTAssertNotNil(someEvent);
+    
+    
+    // I double dog dare you to make this a production event name
+    NSString *completelyUnreasonableSearchTerm = @"Little Bobby Tables https://www.xkcd.com/327/";
+    RLMResults *results = [testEvtDataSource filterEventsWithSearchTerm:completelyUnreasonableSearchTerm];
+    XCTAssertEqual(results.count, 0);
+}
+
 /**
  This test will start failing as soon as more events are added. Figure out a better way to test CloudKit!
  The limitation is that w/o mocking the only way to test is with live records in the dev enviornment.
