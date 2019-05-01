@@ -128,6 +128,17 @@ NS_ASSUME_NONNULL_END
     [self getTravelTimes];
 }
 
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
+    NSString *copyActionTitle = NSLocalizedString(@"Copy Address", @"");
+    UIPreviewAction *copyAction = [UIPreviewAction actionWithTitle:copyActionTitle
+                                                             style:UIPreviewActionStyleDefault
+                                                           handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+                                                               NSString *addressString = self.event.location.streetAddress;
+                                                               [[UIPasteboard generalPasteboard] setString:addressString];
+                                                           }];
+    return @[copyAction];
+}
+
 // MARK: - Travel Times
 
 - (void)getTravelTimes {
