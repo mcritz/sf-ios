@@ -20,4 +20,19 @@
 + (NSString *)primaryKey {
     return @"groupID";
 }
+
++ (NSArray *)ignoredProperties {
+    return @[@"displayPriority"];
+}
+
+- (NSInteger)displayPriority {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"display_priority"];
+}
+
+- (void)setDisplayPriority: (NSInteger) newDisplayPriority {
+    [[NSUserDefaults standardUserDefaults] setInteger:newDisplayPriority
+                                               forKey:@"display_priority"];
+    // [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

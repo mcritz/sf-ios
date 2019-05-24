@@ -17,7 +17,7 @@
 #import "UIViewController+ErrorHandling.h"
 #import "UIActivityViewController+Utilities.h"
 
-@interface GroupCollectionViewController() <UICollectionViewDelegateFlowLayout>
+@interface GroupCollectionViewController() <UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate, UICollectionViewDropDelegate>
 @property(nonatomic) id<FeedProvider> dataSource;
 @property(nonatomic) GroupCollectionView *collectionView;
 @property(nonatomic) ImageStore *cache;
@@ -39,6 +39,9 @@
         self.title = NSLocalizedString(@"Groups", @"Groups view title");
         [_collectionView registerClass:[ImageBasedCollectionViewCell class]
             forCellWithReuseIdentifier:[ImageBasedCollectionViewCell reuseID]];
+        _collectionView.dragInteractionEnabled = TRUE;
+        _collectionView.dragDelegate = self;
+        
     }
     return self;
 }
@@ -49,9 +52,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+    UIBarButtonItem *actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                            target:self
                                                                                            action:@selector(share)];
+    UIBarButtonItem *sortItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize
+                                                                              target:self
+                                                                              action:@selector(share)];
+    self.navigationItem.rightBarButtonItems = @[actionItem, sortItem];
 }
 
 - (void)share {
@@ -123,6 +130,17 @@
 
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.dataSource.numberOfItems;
+}
+
+- (nonnull NSArray<UIDragItem *> *)collectionView:(nonnull UICollectionView *)collectionView
+                     itemsForBeginningDragSession:(nonnull id<UIDragSession>)session
+                                      atIndexPath:(nonnull NSIndexPath *)indexPath {
+    UIDragItem *dragItem = [[UIDragItem alloc] initWithItemProvider:[NSItemProvider new]];
+    return @[dragItem];
+}
+
+- (void)collectionView:(nonnull UICollectionView *)collectionView performDropWithCoordinator:(nonnull id<UICollectionViewDropCoordinator>)coordinator {
+    
 }
 
 @end

@@ -36,12 +36,6 @@
     _window = [[UIWindow alloc] initWithFrame:bounds];
     _window.backgroundColor = [UIColor whiteColor];
 
-    _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                          navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                        options:@{}];
-    _pageViewController.doubleSided = YES;
-    _pageViewController.dataSource = self;
-
     GroupDataSource *groupDataSource = [[GroupDataSource alloc] init];
     GroupCollectionViewController *groupViewController = [[GroupCollectionViewController alloc] initWithDataSource:groupDataSource];
     groupDataSource.delegate = groupViewController;
@@ -64,17 +58,7 @@
     [self.mainNav setNavigationBarHidden:false animated:false];
     [self.mainNav.navigationBar setPrefersLargeTitles:true];
     
-    [_pageViewController setViewControllers:@[self.mainNav]
-                                  direction:UIPageViewControllerNavigationDirectionForward
-                                   animated:NO
-                                 completion:nil];
-
-    _pageViewControllers = @[
-        [SettingsViewController new],
-        self.mainNav
-    ];
-
-    _window.rootViewController = _pageViewController;
+    _window.rootViewController = self.mainNav;
 
     return self;
 }

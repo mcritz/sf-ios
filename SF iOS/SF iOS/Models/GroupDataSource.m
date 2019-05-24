@@ -17,13 +17,22 @@
 @property (nonatomic) GroupFetchService *service;
 @property (nonatomic) RLMRealm *realm;
 @property (nonatomic) RLMNotificationToken *notificationToken;
+@property (readonly) NSArray<RLMSortDescriptor *> *groupSortDescriptors;
 @end
 
 @implementation GroupDataSource
 
+- (NSArray<RLMSortDescriptor *> *)groupSortDescriptors {
+    RLMSortDescriptor *userPrioritySort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"displayPriority"
+                                                                             ascending:true];
+    RLMSortDescriptor *nameSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"name"
+                                                                     ascending:false];
+    return @[userPrioritySort, nameSort];
+}
+
 - (instancetype)init {
     if (self = [super init]) {
-        self.groups = [[Group allObjects] sortedResultsUsingKeyPath:@"name" ascending:false];
+        self.groups = [[Group allObjects] sortedResultsUsingDescriptors:self.groupSortDescriptors];
         self.service = [[GroupFetchService alloc] init];
         [self observeAppActivationEvents];
         self.realm = [RLMRealm defaultRealm];
