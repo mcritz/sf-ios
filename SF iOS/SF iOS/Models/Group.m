@@ -32,7 +32,6 @@
 - (void)setDisplayPriority: (NSInteger) newDisplayPriority {
     [[NSUserDefaults standardUserDefaults] setInteger:newDisplayPriority
                                                forKey:@"display_priority"];
-    // [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
